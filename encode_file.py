@@ -1,5 +1,6 @@
 from PIL import Image
 
+# Message to hide. Ended with the EOT (End of text) character.
 message_to_hide = 'It is a period of civil war. Rebel spaceships, striking from a hidden base, have won \
 their first victory against the evil Galactic Empire. During the battle, Rebel spies managed to steal secret \
 plans to the Empire\'s ultimate weapon, the DEATH STAR, an armored space station with enough power to \
@@ -24,9 +25,12 @@ with Image.open("Rebel_Alliance_flag.png") as img:
     height_count = 0
     width_count = 0
 
+    encoded_bytes = []
+
     for char in message_to_hide:
 
         encoded_char = encode_map[char]
+        encoded_bytes.append(encoded_char)
 
         for bits in encoded_char:
 
@@ -48,4 +52,7 @@ with Image.open("Rebel_Alliance_flag.png") as img:
 
                 height_count += 1
 
+    print(encoded_bytes)
+
+    # Save modified image
     img.save("encoded_image.png")

@@ -2,7 +2,7 @@ from PIL import Image
 
 decode_map = {f'{i:08b}': chr(i) for i in range(0, 128)}
 
-# End of text character
+# EOT (End of text) character
 end_of_text_char = '00000011'
 
 extracted_bin = []
@@ -31,9 +31,11 @@ with Image.open("encoded_image.png") as img:
         if count % 8 == 0 and count != 0:
             byte_string = "".join(to_save)
 
+            # Check if EOT character found
             if byte_string == end_of_text_char:
                 break
 
+            # Check if character is the ASCII table
             try:
                 to_save_string += decode_map[byte_string]
             except KeyError:
@@ -45,5 +47,6 @@ with Image.open("encoded_image.png") as img:
         to_save.append(str(bit))
         count += 1
 
+    # Print the result
     print(decoded_bytes)
     print(to_save_string)
