@@ -1,23 +1,20 @@
 from PIL import Image
 
-decode_map = {
-    '00101101': '-',
-    '01011011': '[',
-    '00111110': '>',
-    '00101011': '+',
-    '00111100': '<',
-    '01011101': ']',
-    '00101110': '.'
-}
+decode_map = {f'{i:08b}': chr(i) for i in range(0, 128)}
+
+# End of text character
+end_of_text_char = '00000011'
 
 extracted_bin = []
-with Image.open("encoded_logo.png") as img:
+
+with Image.open("encoded_image.png") as img:
     width, height = img.size
     for x in range(0, width):
         for y in range(0, height):
             pixel = list(img.getpixel((x, y)))
 
             extracted_bin.append(pixel[0] & 1)
+            # Uncomment to read the 3 bytes in every pixel.
             # for n in range(0, 3):
             #    extracted_bin.append(pixel[n]&1)
 
@@ -34,7 +31,9 @@ with Image.open("encoded_logo.png") as img:
         if count % 8 == 0 and count != 0:
             byte_string = "".join(to_save)
 
-            # if byte_string != '00000000':
+            if byte_string == end_of_text_char:
+                break
+
             try:
                 to_save_string += decode_map[byte_string]
             except KeyError:

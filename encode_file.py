@@ -1,23 +1,16 @@
 from PIL import Image
 
-message_to_hide = '-[------->+<]>+++.+[--->+<]>.-.-------.-[--->+<]>--.++[--->++<]>.---.[->++++++<]>.+[->+++<]>.--[' \
-                  '--->+<]>-.---[->++++<]>.------------.---.--[--->+<]>-.---[' \
-                  '----->++<]>.-------------.---.+++.+++++++.[++>---<]>--.[' \
-                  '->+++<]>+.+++++++++++..---.--------.+++++++++++++.-----------.++.'
+message_to_hide = 'It is a period of civil war. Rebel spaceships, striking from a hidden base, have won \
+their first victory against the evil Galactic Empire. During the battle, Rebel spies managed to steal secret \
+plans to the Empire\'s ultimate weapon, the DEATH STAR, an armored space station with enough power to \
+destroy an entire planet. Pursued by the Empire\'s sinister agents, Princess Leia races home aboard her \
+starship, custodian of the stolen plans that can save her people and restore freedom to the galaxy.\x03'
 
-encode_map = {
-    '-': '00101101',
-    '[': '01011011',
-    '>': '00111110',
-    '+': '00101011',
-    '<': '00111100',
-    ']': '01011101',
-    '.': '00101110',
-}
+encode_map = {chr(i): f'{i:08b}' for i in range(0, 128)}
 
-print(f'Message to hide: \n\n {message_to_hide}'.format(message_to_hide=message_to_hide))
+print(f'Message to hide: \n{message_to_hide}'.format(message_to_hide=message_to_hide))
 
-with Image.open("Google_Chrome_Logo.png") as img:
+with Image.open("Rebel_Alliance_flag.png") as img:
     width, height = img.size
 
     available_storage = (width * height) / 8
@@ -43,11 +36,16 @@ with Image.open("Google_Chrome_Logo.png") as img:
                     height_count = 0
 
                 pixel = list(img.getpixel((width_count, height_count)))
-                for n in range(0, 3):
-                    pixel[n] = pixel[n] & ~1 | int(bit)
+
+                # Encode the message just in the Red channel
+                pixel[0] = pixel[0] & ~1 | int(bit)
+
+                # Uncomment to encode the message in the three channels
+                # for n in range(0, 3):
+                #     pixel[n] = pixel[n] & ~1 | int(bit)
 
                 img.putpixel((width_count, height_count), tuple(pixel))
 
                 height_count += 1
 
-    img.save("encoded_logo.png")
+    img.save("encoded_image.png")
